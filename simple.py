@@ -20,11 +20,11 @@ import hidden
 secrets = hidden.secrets()
 
 conn = psycopg2.connect(host=secrets['host'],
-        port=secrets['port'],
-        database=secrets['database'], 
-        user=secrets['user'], 
-        password=secrets['pass'], 
-        connect_timeout=3)
+                        port=secrets['port'],
+                        database=secrets['database'],
+                        user=secrets['user'],
+                        password=secrets['pass'],
+                        connect_timeout=3)
 
 cur = conn.cursor()
 
@@ -32,25 +32,26 @@ sql = 'DROP TABLE IF EXISTS pythonfun CASCADE;'
 print(sql)
 cur.execute(sql)
 
+# '''
 sql = 'CREATE TABLE pythonfun (id SERIAL, line TEXT);'
 print(sql)
 cur.execute(sql)
 
 conn.commit()    # Flush it all to the DB server
 
-for i in range(10) : 
+for i in range(10):
     txt = "Have a nice day "+str(i)
     sql = 'INSERT INTO pythonfun (line) VALUES (%s);'
     cur.execute(sql, (txt, ))
 
 conn.commit()
 
-sql = "SELECT id, line FROM pythonfun WHERE id=5;" 
+sql = "SELECT id, line FROM pythonfun WHERE id=5;"
 print(sql)
 cur.execute(sql)
 
 row = cur.fetchone()
-if row is None : 
+if row is None:
     print('Row not found')
 else:
     print('Found', row)
@@ -67,4 +68,4 @@ cur.execute(sql)
 
 conn.commit()
 cur.close()
-
+# '''
