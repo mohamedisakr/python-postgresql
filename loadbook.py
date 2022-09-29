@@ -17,7 +17,8 @@ import hidden
 import time
 
 bookfile = input("Enter book file (i.e. pg19337.txt): ")
-if bookfile == '' : bookfile = 'pg19337.txt';
+if bookfile == '':
+    bookfile = 'pg19337.txt'
 base = bookfile.split('.')[0]
 
 # Make sure we can open the file
@@ -27,10 +28,10 @@ fhand = open(bookfile)
 secrets = hidden.secrets()
 
 conn = psycopg2.connect(host=secrets['host'], port=secrets['port'],
-        database=secrets['database'], 
-        user=secrets['user'], 
-        password=secrets['pass'], 
-        connect_timeout=3)
+                        database=secrets['database'],
+                        user=secrets['user'],
+                        password=secrets['pass'],
+                        connect_timeout=3)
 
 cur = conn.cursor()
 
@@ -50,13 +51,15 @@ for line in fhand:
     count = count + 1
     line = line.strip()
     chars = chars + len(line)
-    if line == '' and para == '' : continue
-    if line == '' :
+    if line == '' and para == '':
+        continue
+    if line == '':
         sql = 'INSERT INTO '+base+' (body) VALUES (%s);'
         cur.execute(sql, (para, ))
         pcount = pcount + 1
-        if pcount % 50 == 0 : conn.commit()
-        if pcount % 100 == 0 : 
+        if pcount % 50 == 0:
+            conn.commit()
+        if pcount % 100 == 0:
             print(pcount, 'loaded...')
             time.sleep(1)
         para = ''
@@ -68,7 +71,7 @@ conn.commit()
 cur.close()
 
 print(' ')
-print('Loaded',pcount,'paragraphs',count,'lines',chars,'characters')
+print('Loaded', pcount, 'paragraphs', count, 'lines', chars, 'characters')
 
 sql = "CREATE INDEX TABLE_gin ON TABLE USING gin(to_tsvector('english', body));"
 sql = sql.replace('TABLE', base)
